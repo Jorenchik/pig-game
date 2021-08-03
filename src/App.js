@@ -14,6 +14,7 @@ import { generateDice } from "./helpers";
 const App = () => {
   // Initial values
   const initialDice = 1;
+  const pointsToWin = 10;
 
   // State
   const [currentPlayer, setCurrentPlayer] = useState(1);
@@ -22,36 +23,65 @@ const App = () => {
   const [playerTwoScore, setPlayerTwoScore] = useState(0);
   const [playerOneCurrentScore, setPlayerOneCurrentScore] = useState(0);
   const [playerTwoCurrentScore, setPlayerTwoCurrentScore] = useState(0);
-  const [winner, setWinner] = useState(1);
+  const [winner, setWinner] = useState();
 
   const handleNewGameClick = () => {
     console.log("player clicked new game");
   };
 
+  const switchPlayer = () => {
+    setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+  };
+
   const handleRollDiceClick = () => {
     if (winner) return;
-    let currentDiceSetter;
+    let currentPlayerCurrentScoreSetter;
     let currentPlayerCurrentScore;
     if (currentPlayer === 1) {
-      currentDiceSetter = setPlayerOneCurrentScore;
+      currentPlayerCurrentScoreSetter = setPlayerOneCurrentScore;
       currentPlayerCurrentScore = playerOneCurrentScore;
     }
     if (currentPlayer === 2) {
-      currentDiceSetter = setPlayerTwoCurrentScore;
+      currentPlayerCurrentScoreSetter = setPlayerTwoCurrentScore;
       currentPlayerCurrentScore = playerTwoCurrentScore;
     }
     const dice = generateDice();
     setDice(dice);
     if (dice === 6) {
-      currentDiceSetter(0);
-      setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+      currentPlayerCurrentScoreSetter(0);
+      switchPlayer();
       return;
     }
-    currentDiceSetter(currentPlayerCurrentScore + dice);
+    currentPlayerCurrentScoreSetter(currentPlayerCurrentScore + dice);
   };
 
   const handleHoldClick = () => {
-    console.log("player clicked hold");
+    if (winner) return;
+    let currentPlayerScoreSetter;
+    let currentPlayerCurrentScoreSetter;
+    let currentPlayerCurrentScore;
+    let currentPlayerScore;
+    if (currentPlayer === 1) {
+      currentPlayerScoreSetter = setPlayerOneScore;
+      currentPlayerCurrentScoreSetter = setPlayerOneCurrentScore;
+      currentPlayerCurrentScore = playerOneCurrentScore;
+      currentPlayerScore = playerOneScore;
+    }
+    if (currentPlayer === 2) {
+      currentPlayerScoreSetter = setPlayerTwoScore;
+      currentPlayerCurrentScoreSetter = setPlayerTwoCurrentScore;
+      currentPlayerCurrentScore = playerTwoCurrentScore;
+      currentPlayerScore = playerTwoScore;
+    }
+    if (currentPlayerCurrentScore === 0) return;
+    currentPlayerCurrentScoreSetter(0);
+    const newScore = currentPlayerScore + currentPlayerCurrentScore;
+    currentPlayerScoreSetter(newScore);
+    if (newScore < pointsToWin) {
+      switchPlayer();
+      return;
+    }
+    setWinner(currentPlayer);
   };
 
   const clickHandlers = {
