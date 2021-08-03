@@ -9,7 +9,7 @@ import Dice from "./components/Dice";
 import ActionButton from "./components/ActionButton";
 
 // Helpers
-import { getInitialDice } from "./helpers";
+import { generateDice } from "./helpers";
 
 const App = () => {
   // Initial values
@@ -22,7 +22,43 @@ const App = () => {
   const [playerTwoScore, setPlayerTwoScore] = useState(0);
   const [playerOneCurrentScore, setPlayerOneCurrentScore] = useState(0);
   const [playerTwoCurrentScore, setPlayerTwoCurrentScore] = useState(0);
-  const [winner, setWinner] = useState();
+  const [winner, setWinner] = useState(1);
+
+  const handleNewGameClick = () => {
+    console.log("player clicked new game");
+  };
+
+  const handleRollDiceClick = () => {
+    if (winner) return;
+    let currentDiceSetter;
+    let currentPlayerCurrentScore;
+    if (currentPlayer === 1) {
+      currentDiceSetter = setPlayerOneCurrentScore;
+      currentPlayerCurrentScore = playerOneCurrentScore;
+    }
+    if (currentPlayer === 2) {
+      currentDiceSetter = setPlayerTwoCurrentScore;
+      currentPlayerCurrentScore = playerTwoCurrentScore;
+    }
+    const dice = generateDice();
+    setDice(dice);
+    if (dice === 6) {
+      currentDiceSetter(0);
+      setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+      return;
+    }
+    currentDiceSetter(currentPlayerCurrentScore + dice);
+  };
+
+  const handleHoldClick = () => {
+    console.log("player clicked hold");
+  };
+
+  const clickHandlers = {
+    handleNewGameClick,
+    handleRollDiceClick,
+    handleHoldClick,
+  };
 
   return (
     <div className="App">
@@ -41,9 +77,9 @@ const App = () => {
         isWinner={winner === 2 ? true : false}
       />
       <Dice dice={dice} />
-      <ActionButton type="new" text="🔄 New game" />
-      <ActionButton type="roll" text="🎲 Roll dice" />
-      <ActionButton type="hold" text="📥 Hold" />
+      <ActionButton type="new" text="🔄 New game" handlers={clickHandlers} />
+      <ActionButton type="roll" text="🎲 Roll dice" handlers={clickHandlers} />
+      <ActionButton type="hold" text="📥 Hold" handlers={clickHandlers} />
       <GlobalStyles />
     </div>
   );
