@@ -26,7 +26,12 @@ const App = () => {
   const [winner, setWinner] = useState();
 
   const handleNewGameClick = () => {
-    console.log("player clicked new game");
+    setCurrentPlayer(1);
+    setWinner();
+    setPlayerOneScore(0);
+    setPlayerTwoScore(0);
+    setPlayerOneCurrentScore(0);
+    setPlayerTwoCurrentScore(0);
   };
 
   const switchPlayer = () => {
