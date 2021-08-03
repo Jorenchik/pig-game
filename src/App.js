@@ -13,8 +13,8 @@ import { generateDice } from "./helpers";
 
 const App = () => {
   // Initial values
-  const initialDice = 1;
-  const pointsToWin = 10;
+  const initialDice = 0;
+  const pointsToWin = 100;
 
   // State
   const [currentPlayer, setCurrentPlayer] = useState(1);
@@ -28,6 +28,7 @@ const App = () => {
   const handleNewGameClick = () => {
     setCurrentPlayer(1);
     setWinner();
+    setDice(0);
     setPlayerOneScore(0);
     setPlayerTwoScore(0);
     setPlayerOneCurrentScore(0);
